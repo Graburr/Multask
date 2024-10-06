@@ -11,10 +11,9 @@ from Player import Player
 from Ppv import Ppv
 from Spotify import Spotify
 from Youtube import Youtube
+from MyView import MyView
 
-
-
-class Bot:
+class Bot():
 
     def __init__(self, game: Game, message: Message, player: Player,
                  ppv: Ppv, spotify: Spotify, youtube: Youtube):
@@ -32,7 +31,7 @@ class Bot:
 
     def run_bot(self):
             intents = discord.Intents.all()
-            bot = commands.Bot(command_prefix='$', intents=intents)
+            bot = commands.Bot(command_prefix='$', intents=intents, help_command=None)
             return bot
             
     
@@ -50,11 +49,22 @@ class Bot:
 
     def register_commands(self):
         """Register the commands that the user types."""
-        @self.bot.command(name='h')
-        async def help_command(ctx):
-            await ctx.send(f"Esto es una prueba de que funciona:\n"
-                           f"{self.game.get_desc()}{self.player.get_desc()}"
-                           f"{self.message.get_desc()}")
+        @self.bot.command()
+        async def help(ctx):
+            embed = discord.Embed(
+                 title="Use of commands",
+                 description="Show all types of commands that you have",
+                 color=discord.Colour(value=0x8170EE),
+            )
+            embed.add_field(name="Help commands",
+                            value=f"\n**!game:** {self.game.get_desc()}\n\
+                                    **!player:** {self.player.get_desc()}\n\
+                                    **!message:** {self.message.get_desc()}")
+            file = discord.File(f"{os.path.dirname(__file__)}/images/icon_dc.png", filename="icon_dc.png")
+            embed.set_author(name="Multask info", icon_url="attachment://icon_dc.png")
+            embed.set_thumbnail(url="attachment://icon_dc.png")
+            embed.set_footer(text="© Multask")
+            await ctx.send(file=file, embed=embed, view=MyView(bot=self.bot, channel=ctx.channel))
          
 
 
