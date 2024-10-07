@@ -13,6 +13,8 @@ from Spotify import Spotify
 from Youtube import Youtube
 from MyView import MyView
 
+
+
 class Bot():
 
     def __init__(self, game: Game, message: Message, player: Player,
@@ -24,6 +26,7 @@ class Bot():
         self.ppv = ppv
         self.spotify = spotify
         self.youtube = youtube
+        self.file = discord.File(f"{os.path.dirname(__file__)}/images/icon_dc.png", filename="icon_dc.png")
         self.bot = self.run_bot()
         self.register_events()
         self.register_commands()
@@ -47,8 +50,12 @@ class Bot():
             msg = args[0]
             await ctx.send(msg)
 
-    def register_commands(self):
+    
+
+    def register_commands(self, *args):
         """Register the commands that the user types."""
+        
+
         @self.bot.command()
         async def help(ctx):
             embed = discord.Embed(
@@ -60,13 +67,27 @@ class Bot():
                             value=f"\n**!game:** {self.game.get_desc()}\n\
                                     **!player:** {self.player.get_desc()}\n\
                                     **!message:** {self.message.get_desc()}")
-            file = discord.File(f"{os.path.dirname(__file__)}/images/icon_dc.png", filename="icon_dc.png")
-            embed.set_author(name="Multask info", icon_url="attachment://icon_dc.png")
-            embed.set_thumbnail(url="attachment://icon_dc.png")
-            embed.set_footer(text="© Multask")
-            await ctx.send(file=file, embed=embed, view=MyView(bot=self.bot, channel=ctx.channel))
-         
 
+            embed.set_author(name="Multask info", icon_url=f"attachment://{self.file.filename}")
+            embed.set_thumbnail(url=f"attachment://{self.file.filename}")
+            embed.set_footer(text="© Multask")
+            await ctx.send(file=self.file, embed=embed, view=MyView(bot=self.bot, channel=ctx.channel))
+
+
+        @self.bot.command(name="create-pool")
+        async def create_pool(ctx, title: str, description: str):
+            await self.message.create_pool(ctx, title=title, description=description, icon=self.file)
+        
+
+        @self.bot.command(name="get-winner")
+        async def get_winner(ctx):
+            await self.message.get_winner(ctx)
+
+        @self.bot.command(name="clear")
+        async def remove_messages(ctx):
+            if len(ctx.args) > 1:
+                await self.message.remove_messages(ctx, ctx.args[1])
+            await self.message.remove_messages(ctx)
 
 if __name__=='__main__':
     if os.name == 'nt': 
