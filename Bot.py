@@ -75,15 +75,18 @@ class Bot():
 
 
         @self.bot.command(name="create-pool")
+        @commands.has_role('Admin')
         async def create_pool(ctx, title: str, description: str):
             await self.message.create_pool(ctx, title=title, description=description, icon=self.file)
         
 
         @self.bot.command(name="get-winner")
+        @commands.has_role('Admin')
         async def get_winner(ctx):
             await self.message.get_winner(ctx)
 
         @self.bot.command(name="clear")
+        @commands.has_role('Admin')
         async def remove_messages(ctx):
             if len(ctx.args) > 1:
                 await self.message.remove_messages(ctx, ctx.args[1])
