@@ -26,7 +26,8 @@ class Bot():
         self.ppv = ppv
         self.spotify = spotify
         self.youtube = youtube
-        self.file = discord.File(f"{os.path.dirname(__file__)}/images/icon_dc.png", filename="icon_dc.png")
+        self.file = discord.File(f"{os.path.dirname(__file__)}/images/icon_dc.png", 
+                                 filename="icon_dc.png")
         self.bot = self.run_bot()
         self.register_events()
         self.register_commands()
@@ -68,16 +69,19 @@ class Bot():
                                     **!player:** {self.player.get_desc()}\n\
                                     **!message:** {self.message.get_desc()}")
 
-            embed.set_author(name="Multask info", icon_url=f"attachment://{self.file.filename}")
+            embed.set_author(name="Multask info", 
+                             icon_url=f"attachment://{self.file.filename}")
             embed.set_thumbnail(url=f"attachment://{self.file.filename}")
             embed.set_footer(text="© Multask")
-            await ctx.send(file=self.file, embed=embed, view=MyView(bot=self.bot, channel=ctx.channel))
+            await ctx.send(file=self.file, embed=embed, view=MyView(bot=self.bot, 
+                           channel=ctx.channel))
 
 
         @self.bot.command(name="create-pool")
         @commands.has_role('Admin')
-        async def create_pool(ctx, title: str, description: str):
-            await self.message.create_pool(ctx, title=title, description=description, icon=self.file)
+        async def create_draw(ctx, title: str, description: str):
+            await self.message.create_draw(ctx, title=title, description=description, 
+                                           icon=self.file)
         
 
         @self.bot.command(name="get-winner")
@@ -87,10 +91,8 @@ class Bot():
 
         @self.bot.command(name="clear")
         @commands.has_role('Admin')
-        async def remove_messages(ctx):
-            if len(ctx.args) > 1:
-                await self.message.remove_messages(ctx, ctx.args[1])
-            await self.message.remove_messages(ctx)
+        async def remove_messages(ctx, number: int):
+            await self.message.remove_messages(ctx, number)
 
 if __name__=='__main__':
     if os.name == 'nt': 
