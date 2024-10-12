@@ -5,10 +5,10 @@ import discord
 from dotenv import load_dotenv
 from discord.ext import commands
 
-from Game import Game
-from Message import Message
-from Player import Player
-from Ppv import Ppv
+from cogs.Game import Game
+from cogs.Message import Message
+from cogs.Player import Player
+from cogs.Ppv import Ppv
 from Spotify import Spotify
 from Youtube import Youtube
 from MyView import MyView
@@ -17,15 +17,8 @@ from MyView import MyView
 
 class Bot():
 
-    def __init__(self, game: Game, message: Message, player: Player,
-                 ppv: Ppv, spotify: Spotify, youtube: Youtube):
+    def __init__(self):
         """Constructor to initialize the bot class"""
-        self.game = game
-        self.message = message
-        self.player = player
-        self.ppv = ppv
-        self.spotify = spotify
-        self.youtube = youtube
         self.file = discord.File(f"{os.path.dirname(__file__)}/images/icon_dc.png", 
                                  filename="icon_dc.png")
         self.bot = self.run_bot()
@@ -36,11 +29,16 @@ class Bot():
     def run_bot(self):
             intents = discord.Intents.all()
             bot = commands.Bot(command_prefix='$', intents=intents, help_command=None)
+            asyncio.run(bot.add_cog(Message(bot)))
+            #asyncio.run(bot.load_extension("cogs.Message"))
+            cog = bot.get_cog('Message')
+            comm = cog.get_commands()
+            print([c.name for c in comm])
             return bot
             
     
     def start_bot(self, TOKEN: str):
-         self.bot.run(TOKEN)
+         self.bot.run(TOKEN) 
             
 
     def register_events(self):
@@ -77,12 +75,12 @@ class Bot():
                            channel=ctx.channel))
 
 
-        @self.bot.command(name="create-pool")
+        @self.bot.command(name="create-draw")
         @commands.has_role('Admin')
-        async def create_draw(ctx, title: str, description: str):
+        async def create_draw(ctx, title: str=None, description: str=None):
             await self.message.create_draw(ctx, title=title, description=description, 
-                                           icon=self.file)
-        
+                                            icon=self.file)
+    
 
         @self.bot.command(name="get-winner")
         @commands.has_role('Admin')
@@ -94,6 +92,10 @@ class Bot():
         async def remove_messages(ctx, number: int):
             await self.message.remove_messages(ctx, number)
 
+
+
+
+
 if __name__=='__main__':
     if os.name == 'nt': 
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
@@ -102,5 +104,5 @@ if __name__=='__main__':
     load_dotenv('./bot.env')
     TOKEN = os.getenv('DISCORD_TOKEN')
 
-    bot = Bot(Game(), Message(), Player(), Ppv(), Spotify(), Youtube())
+    bot = Bot()
     bot.start_bot(TOKEN)

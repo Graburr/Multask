@@ -4,7 +4,8 @@ import asyncio
 import discord
 from discord.ext import commands
 
-class Message:
+
+class Message(commands.Cog):
     """ A class used to manage all messages send by the bot
 
     This class is created to manage all the messages that the bot send to each channel
@@ -69,9 +70,10 @@ class Message:
         Set a new field to an existant embed
     """
 
-    def __init__(self) -> None:
+    def __init__(self, bot) -> None:
+        self.bot = bot
         self.reaction = "✅"
-        self.file = discord.File(f"{os.path.dirname(__file__)}/images/icon_dc.png",
+        self.file = discord.File(f"{os.path.dirname(__file__)}/../images/icon_dc.png",
                                 filename="icon_dc.png")
         self.__draws = dict()
 
@@ -87,12 +89,13 @@ class Message:
         -----
         See the $help command of Bot.py
         """
-        return f"!message is used to interact using messages in the chat
+        return f"""!message is used to interact using messages in the chat
                  with the bot as well as making some tasks like create draws,
-                 delete some messages, etc.\n"
+                 delete some messages, etc.\n"""
 
-    async def create_draw(self, ctx, *, title: str, description: str, 
-                          icon: discord.File) -> None:
+    @commands.command()
+    async def create_draw(self, ctx, title: str, description: str, 
+                          icon: discord.File=None, reaction: str=None) -> None:
         """Create a draw in the current channel
 
         Create a draw in the same channel where the command was invoked
@@ -110,24 +113,36 @@ class Message:
             Some description about how participate and when the winners will be 
             gived.
 
-        icon : discord.File
-            Image that is setted at the top right of the draw message
+        icon : discord.File, optional
+            Image that is setted at the top right of the draw message. If no value 
+            provided, the default icon will be assigned.
+
+        reaction: str, optional
+            Emoji to set the reaction button for participate on the draw. If no value
+            is given, it's used the default value (atribute self.reaction)
 
         Returns:
         --------
         None
         """
         if ctx.guild not in self.__draws:
+            if not icon:
+                icon = self.file
+
             embed = self.__create_embed(title, description, icon)
             msg = await ctx.send(file=icon, embed=embed)
             
-            await msg.add_reaction(self.reaction)
+            if not reaction: # If no value of reaction was given, use default reaction
+                reaction = self.reaction
+
+            await msg.add_reaction(reaction)
             self.__draws[ctx.guild] = {
                 ctx.channel: [embed, msg.id]
             }
         else:
             await ctx.send("There is alredy a draw in this channel")
-        
+    
+    @commands.command()
     async def get_winner(self, ctx) -> None:
         """get the winner of the draw created before
 
@@ -171,14 +186,14 @@ class Message:
         await ctx.send(embed=embed)
 
 
-        priv_msg = f"You: {winner.display_name}, have won the draw, put in contact
-                     with a moderator"
+        priv_msg = f"""You: {winner.display_name}, have won the draw, put in contact
+                     with a moderator"""
         embed.remove_field(0)
         await self.__send_priv_msg(winner, title, priv_msg, embed)
         await msg.delete()
         
-
-    async def remove_messages(self, ctx, number: int) -> None:
+    @commands.command()
+    async def remove_messages(self, ctx, number: int=None) -> None:
         """Remove the number of messages (from newest to oldest)
         
         Paraeters:
@@ -196,14 +211,21 @@ class Message:
         """
         seconds_sleep = 0.5
 
+        if not number:
+            await ctx.send("Expected $remove_messages <number> where number is the "
+                           "quantity of messages that will be deleted")
+            return
+
         if number >= 50:
             time_stimate = number * seconds_sleep
-            await ctx.send(f"This will take around {time_stimate}s to delete the
-                           {number} messages")
+            await ctx.send(f"""This will take around {time_stimate}s to delete the
+                           {number} messages""")
             await asyncio.sleep(3)
 
         async for msg in ctx.channel.history(limit=number+1):
-            await msg.delete(delay=seconds_sleep)
+            await msg.delete()
+            # Used to don't overload the server discord and dimiss delete some messages
+            await asyncio.sleep(seconds_sleep)
 
     
     async def __send_priv_msg(self, member: discord.Member, title: str, text: str, 
