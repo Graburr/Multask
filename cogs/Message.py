@@ -6,7 +6,7 @@ from discord.ext import commands
 
 
 class Message(commands.Cog):
-    """ A class used to manage all messages send by the bot
+    """ A class used to manage all messages send by the bot.
 
     This class is created to manage all the messages that the bot send to each channel
     of a guild (server) as well as private messages
@@ -17,77 +17,77 @@ class Message(commands.Cog):
     Attributes:
     -----------
     reaction : str
-        Default emoji reaction to participate on draws
+        Default emoji reaction to participate on draws.
 
     file : discord.File
-        File location of the avatar used by the bot
+        File location of the avatar used by the bot.
 
     __draws : Dict
-        Private dictionary to store all the differents draws in differents guilds
+        Private dictionary to store all the differents draws in differents guilds.
 
 
     Methods:
     --------
-    get_desc(self) -> str
+    get_desc(self) -> str:
         Give a general description of the purpose of this class for the help command
-        of class Bot
+        of class Bot.
 
-    create_pool(self, ctx, *, title: str, description: str, 
+    create_draw(self, ctx, *, title: str, description: str, 
                 icon: discord.File) -> None:
-        Create a draw in the specific channel that it's invoked
+        Create a draw in the specific channel that it's invoked.
 
     get_winner(self, ctx) -> None:
         Get the winner (choosed randomly) of the draw created in the same channel
-        where this method is called
+        where this method is called.
 
     remove_messages(self, ctx, number: int) -> None:
         Remove an specific amount of messages where this method is invoked using the
-        order newest -> oldest
+        order newest -> oldest.
 
     __send_priv_msg(self, member: discord.Member, title: str, text: str, 
                               embed: discord.Embed=None) -> None:
-        Send a private message to someone with an specific text
+        Send a private message to someone with an specific text.
 
     __get_title(self, ctx) -> str:
         Return the title of the draw that was created in the same channel where this
-        method is invoked
+        method is invoked.
 
     __get_embed(self, ctx) -> discord.Embed:    
         Return the embed used in the draw that was created in the same channel where
-        this method is invoked
+        this method is invoked.
 
     __get_msg_id(self, ctx) -> int:
         Return the id of the draw msg that was created in the same channel where this
-        method is invoked
+        method is invoked.
 
     __create_embed(self, title: str, desciption: str, icon: discord.File, 
                        color: int=0x8170EE, text_fileds: dict[str, str]=dict(), 
                        inline: bool=False) -> discord.Embed:
-        Create an embed and set the necesary information
+        Create an embed and set the necesary information.
 
     __set_field(self, embed: discord.Embed, values: dict[str, str], 
                     inline: bool=False ) -> None:
-        Set a new field to an existant embed
+        Set a new field to an existant embed.
     """
 
-    def __init__(self, bot) -> None:
-        self.bot = bot
+    def __init__(self) -> None:
         self.reaction = "✅"
         self.file = discord.File(f"{os.path.dirname(__file__)}/../images/icon_dc.png",
                                 filename="icon_dc.png")
         self.__draws = dict()
 
-    def get_desc(self) -> str:
-        """Returns a message summaraising the purpose of message class commands
+    @staticmethod
+    def get_desc() -> str:
+        """Returns a message summaraising the purpose of message class commands.
         
         Return:
         -------
         str
-            Containing the message for class Bot
+            Containing the message for class Bot.
 
         Note:
         -----
-        See the $help command of Bot.py
+        See the $help command of Bot.py.
         """
         return f"""!message is used to interact using messages in the chat
                  with the bot as well as making some tasks like create draws,
@@ -96,18 +96,18 @@ class Message(commands.Cog):
     @commands.command()
     async def create_draw(self, ctx, title: str, description: str, 
                           icon: discord.File=None, reaction: str=None) -> None:
-        """Create a draw in the current channel
+        """Create a draw in the current channel.
 
-        Create a draw in the same channel where the command was invoked
+        Create a draw in the same channel where the command was invoked.
 
         Parameters:
         -----------
         ctx : discord.ext.commands.Context
             Represent the context (information) where the command is being invoked 
-            under
+            under.
 
         title : str
-            The title that will be used in the draw
+            The title that will be used in the draw.
 
         description : str
             Some description about how participate and when the winners will be 
@@ -115,15 +115,15 @@ class Message(commands.Cog):
 
         icon : discord.File, optional
             Image that is setted at the top right of the draw message. If no value 
-            provided, the default icon will be assigned.
+            is given, the default icon will be assigned.
 
         reaction: str, optional
             Emoji to set the reaction button for participate on the draw. If no value
-            is given, it's used the default value (atribute self.reaction)
+            is given, it's used the default value (atribute self.reaction).
 
         Returns:
         --------
-        None
+        None.
         """
         if ctx.guild not in self.__draws:
             if not icon:
@@ -144,25 +144,25 @@ class Message(commands.Cog):
     
     @commands.command()
     async def get_winner(self, ctx) -> None:
-        """get the winner of the draw created before
+        """get the winner of the draw created before.
 
         Get a winner slected randomly of the draw that was created in the same
-        channel where this is being invoked under
+        channel where this is being invoked under.
 
         Parameter:
         ----------
          ctx : discord.ext.commands.Context
             Represent the context (information) where the command is being invoked 
-            under
+            under.
 
         Raises:
         -------
         ValueError
-            If there isn't currently a draw in the channel 
+            If there isn't currently a draw in the channel.
 
         Returns:
         --------
-        None
+        None.
         """
         if ctx.channel not in self.__draws[ctx.guild]:
             raise ValueError("This draw doesn't exist in this channel.")
@@ -194,20 +194,21 @@ class Message(commands.Cog):
         
     @commands.command()
     async def remove_messages(self, ctx, number: int=None) -> None:
-        """Remove the number of messages (from newest to oldest)
+        """Remove the number of messages (from newest to oldest).
         
         Paraeters:
         ----------
         ctx : discord.ext.commands.Context
             Represent the context (information) where the command is being invoked 
-            under
+            under.
         
         number : int
-            The amount of messages to delete
+            The amount of messages to delete. If no number if passed, it will print
+            a message asking for that number in order to use this function.
 
         Return:
         -------
-        None
+        None.
         """
         seconds_sleep = 0.5
 
@@ -230,28 +231,28 @@ class Message(commands.Cog):
     
     async def __send_priv_msg(self, member: discord.Member, title: str, text: str, 
                               embed: discord.Embed=None) -> None:
-        """Send a private message to the user specified by the parameter member
+        """Send a private message to the user specified by the parameter member.
         
         Send a private message to a member with the title, text and if it's provided,
-        the bot uses the embed object to send it with a personalized presentation
+        the bot uses the embed object to send it with a personalized presentation.
 
         Parameters:
         -----------
         member : discord.Member
-            The member who the message is going to be send
+            The member who the message is going to be send.
 
         title : str
-            Title of the message
+            Title of the message.
 
         text : str
-            Text to send
+            Text to send.
 
         embed : discord.Embed, optional
-            embed object to give a personalization to the message
+            embed object to give a personalization to the message.
 
         Return:
         -------
-        None
+        None.
         """
         await member.create_dm()
 
@@ -266,61 +267,61 @@ class Message(commands.Cog):
             
     
     def __get_title(self, ctx) -> str:
-        """Get the title of the draw
+        """Get the title of the draw.
         
         Get the title of the draw where is being invoked under through the embed
-        object stored in self.__draws
+        object stored in self.__draws.
 
         Paraeters:
         ----------
         ctx : discord.ext.commands.Context
             Represent the context (information) where the command is being invoked 
-            under
+            under.
 
         Return:
         -------
         str
-            containing the title
+            containing the title.
         """
         return self.__draws[ctx.guild][ctx.channel][0].title
 
 
     def __get_embed(self, ctx) -> discord.Embed:
-        """Get the embed object used in the draw
+        """Get the embed object used in the draw.
         
         Get the embed object used where is being invoked under through the embed 
-        object stored in self.__draws
+        object stored in self.__draws.
 
         Paraeters:
         ----------
         ctx : discord.ext.commands.Context
             Represent the context (information) where the command is being invoked 
-            under
+            under.
         
         Return:
         -------
         discord.Embed
-            embed object used by the draw
+            embed object used by the draw.
         """
         return self.__draws[ctx.guild][ctx.channel][0]
 
 
     def __get_msg_id(self, ctx) -> int:
-        """Get the embed object used in the draw
+        """Get the embed object used in the draw.
         
         Get the embed object used where is being invoked under through the embed 
-        object stored in self.__draws
+        object stored in self.__draws.
 
         Paraeters:
         ----------
         ctx : discord.ext.commands.Context
             Represent the context (information) where the command is being invoked 
-            under
+            under.
         
         Return:
         -------
         int
-            with the id of the draw message
+            with the id of the draw message.
         """
         return self.__draws[ctx.guild][ctx.channel][1]
     
@@ -348,7 +349,7 @@ class Message(commands.Cog):
     
     def __set_field(self, embed: discord.Embed, values: dict[str, str], 
                     inline: bool=False ) -> None:
-        """ Set new field/s in the existant embed object
+        """ Set new field/s in the existant embed object.
 
         Set a new field/s using the differents functions of discord.Embed with the 
         different configuration that could be given to each function.
@@ -356,24 +357,24 @@ class Message(commands.Cog):
         Parameters:
         -----------
         embed : discord.Embed
-            The embed object where it will added new fields
+            The embed object where it will added new fields.
 
         values : dict[str, str]
             The key indicate which parameter set on add_field() and value, has the
-            value asociated to that parameter
+            value asociated to that parameter.
 
         inline : bool, optional
             Indicate if the new text of add_field should go in the same line (default
-            if False)
+            if False).
 
         Raises:
         -------
         ValueError
-            If the embed doesn't exist 
+            If the embed doesn't exist. 
 
         Return:
         -------
-        None
+        None.
         """
         if not embed:
             raise ValueError("Expected an object embed previously created, "
