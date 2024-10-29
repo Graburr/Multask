@@ -4,13 +4,12 @@ import asyncio
 import discord
 from dotenv import load_dotenv
 from discord.ext import commands
+import wavelink
 
 from cogs.Game import Game
 from cogs.Message import Message
 from cogs.Player import Player
 from cogs.Ppv import Ppv
-from Spotify import Spotify
-from Youtube import Youtube
 from MyView import MyView
 
 
@@ -71,12 +70,14 @@ class Bot():
         bot = commands.Bot(command_prefix='$', intents=intents, help_command=None)
 
         asyncio.run(bot.add_cog(Message()))
+        asyncio.run(bot.add_cog(Player(bot)))
 
         return bot
             
     
     def start_bot(self, TOKEN: str) -> None:
-         self.bot.run(TOKEN) 
+        self.bot.run(TOKEN)
+
             
 
     def register_events(self) -> None:
@@ -95,6 +96,29 @@ class Bot():
             msg = args[0]
             await ctx.send(msg)
 
+        @self.bot.event
+        async def on_ready() -> None:
+            """Execute this function automatically when bot is set up.
+            
+            This create a node of a public server of Lavalink to reproduce songs
+
+            Returns
+            -------
+            None
+            """
+            await self.bot.wait_until_ready()
+            
+            # Public server
+            nodes = [
+                wavelink.Node(
+                identifier="Node1", # This identifier must be unique for all the nodes you are going to use
+                uri="https://lavalinkv4-id.serenetia.com:443", # Protocol (http/s) is required, port must be 443 as it is the one lavalink uses
+                password="BatuManaBisa",
+                )       
+            ]
+
+            await wavelink.Pool.connect(client=self.bot, nodes=nodes)
+            print("Conexion stablized")
     
 
     def register_commands(self) -> None:
@@ -133,6 +157,9 @@ class Bot():
             embed.set_footer(text="© Multask")
 
             await ctx.send(file=self.icon, embed=embed, view=MyView(channel=ctx.channel))
+        
+
+    
 
 
 if __name__=='__main__':

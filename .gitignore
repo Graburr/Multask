@@ -1,2 +1,6 @@
 Leasons/
 bot.env
+__pycache__
+cogs/__pycache__
+logs/
+application.yml

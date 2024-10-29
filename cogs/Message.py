@@ -189,6 +189,7 @@ class Message(commands.Cog):
         priv_msg = f"""You: {winner.display_name}, have won the draw, put in contact
                      with a moderator"""
         embed.remove_field(0)
+        
         await self.__send_priv_msg(winner, title, priv_msg, embed)
         await msg.delete()
         
