@@ -2,6 +2,7 @@ import random
 import asyncio
 
 import typing
+from typing import Optional
 import discord
 from discord.ext import commands
 import wavelink
@@ -11,8 +12,9 @@ class Player(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         """Constructor of the media player"""
         self.bot = bot
-        self.songs : list[wavelink.Playable]
+        self.songs : list[wavelink.Playable] = []
         self.listening_music = False
+        self.task : Optional[asyncio.Task] = None
 
 
     @staticmethod
@@ -21,7 +23,7 @@ class Player(commands.Cog):
 
 
     @commands.command()
-    async def play(self, ctx, search: str) -> None:
+    async def play(self, ctx, search: str, shuffle: str="n") -> None:
         channel = ctx.author.voice.channel
 
         if not channel:
@@ -38,14 +40,24 @@ class Player(commands.Cog):
             await ctx.send("No song found");
             return
         
-        if song.playlist:
-            self.songs.extend(song.tracks)
+        if isinstance(song, wavelink.Playlist):
+            temp_songs = self.songs
+            self.songs = song.tracks
+
+            if not temp_songs:
+                self.songs.extend(temp_songs)
         else:
             self.songs.append(song)
 
+        randomize = False
+
+        if len(self.songs) > 1 and shuffle == "y":
+            randomize = True
+            
         if not self.listening_music:
-             self.listening_music = True
-             asyncio.create_task(self.__listening_music(ctx, voice_channel, wavelink.Player))
+            self.listening_music = True
+            self.task = asyncio.create_task(self.__listening_music
+                                             (ctx, voice_channel, wavelink.Player, randomize))
 
     @commands.command()
     async def disconnect(self, ctx) -> None: 
@@ -61,26 +73,31 @@ class Player(commands.Cog):
             print(f"An error occured when cleaning up the voice data of bot: {te}\n")
 
         self.listening_music = False
+        self.task.cancel()
 
 
-    async def __listening_music(self, ctx, channel: discord.VoiceProtocol, 
-                                bot_status: discord.voice_client.VoiceClient, 
-                                shuffle: bool=False) -> None:
-        while self.songs and self.listening_music:
-            if not bot_status.is_playing():
-                await self.__play_song(ctx, channel=channel, shuffle=shuffle)
-            
-            # suspend 5sec the coroutine to not overload the processor" 
-            await asyncio.sleep(5) 
-            
+    async def __listening_music(self, ctx, channel : discord.VoiceProtocol, 
+                                bot_status : discord.voice_client.VoiceClient, 
+                                shuffle : bool) -> None:
+        try:
+            while self.songs:
+                index_song = 0
+                if shuffle:
+                    index_song = random.randint(0, len(self.songs) - 1)
 
-    async def __play_song(self, ctx, *, channel: discord.VoiceProtocol, 
-                          shuffle: bool=False) -> None:
-        index_song = 0
+                song = self.songs[index_song]
+                await self.__play_song(ctx, song=song, channel=channel)
 
-        if shuffle and isinstance(self.song, wavelink.Playlist):
-            index_song = random.randint(0, self.song.length - 1)
+                self.songs.pop(index_song)
+                # suspend 5sec the coroutine to not overload the processor" 
+                await asyncio.sleep(song.length / 1000) 
 
-        await channel.play(self.song[index_song])
-        await ctx.send(f"Playing {self.song[index_song].title}")
-        self.song.pop(index_song)
+        except asyncio.CancelledError as e:
+            print(f"Bot was disconnected: {e}")
+
+
+    async def __play_song(self, ctx, *, song : wavelink.Playable,  channel : 
+                          discord.VoiceProtocol) -> None:
+        await channel.play(song)
+        await ctx.send(f"Playing {song.title}")
+        

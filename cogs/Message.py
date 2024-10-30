@@ -14,7 +14,7 @@ class Message(commands.Cog):
     better presentation.
 
 
-    Attributes:
+    Attributes
     -----------
     reaction : str
         Default emoji reaction to participate on draws.
@@ -26,7 +26,7 @@ class Message(commands.Cog):
         Private dictionary to store all the differents draws in differents guilds.
 
 
-    Methods:
+    Methods
     --------
     get_desc(self) -> str:
         Give a general description of the purpose of this class for the help command
@@ -80,12 +80,12 @@ class Message(commands.Cog):
     def get_desc() -> str:
         """Returns a message summaraising the purpose of message class commands.
         
-        Return:
+        Return
         -------
         str
             Containing the message for class Bot.
 
-        Note:
+        Note
         -----
         See the $help command of Bot.py.
         """
@@ -100,7 +100,7 @@ class Message(commands.Cog):
 
         Create a draw in the same channel where the command was invoked.
 
-        Parameters:
+        Parameters
         -----------
         ctx : discord.ext.commands.Context
             Represent the context (information) where the command is being invoked 
@@ -121,7 +121,7 @@ class Message(commands.Cog):
             Emoji to set the reaction button for participate on the draw. If no value
             is given, it's used the default value (atribute self.reaction).
 
-        Returns:
+        Returns
         --------
         None.
         """
@@ -149,18 +149,18 @@ class Message(commands.Cog):
         Get a winner slected randomly of the draw that was created in the same
         channel where this is being invoked under.
 
-        Parameter:
+        Parameter
         ----------
          ctx : discord.ext.commands.Context
             Represent the context (information) where the command is being invoked 
             under.
 
-        Raises:
+        Raises
         -------
         ValueError
             If there isn't currently a draw in the channel.
 
-        Returns:
+        Return
         --------
         None.
         """
@@ -197,7 +197,7 @@ class Message(commands.Cog):
     async def remove_messages(self, ctx, number: int=None) -> None:
         """Remove the number of messages (from newest to oldest).
         
-        Paraeters:
+        Paraeters
         ----------
         ctx : discord.ext.commands.Context
             Represent the context (information) where the command is being invoked 
@@ -207,7 +207,7 @@ class Message(commands.Cog):
             The amount of messages to delete. If no number if passed, it will print
             a message asking for that number in order to use this function.
 
-        Return:
+        Return
         -------
         None.
         """
@@ -237,7 +237,7 @@ class Message(commands.Cog):
         Send a private message to a member with the title, text and if it's provided,
         the bot uses the embed object to send it with a personalized presentation.
 
-        Parameters:
+        Parameters
         -----------
         member : discord.Member
             The member who the message is going to be send.
@@ -251,7 +251,7 @@ class Message(commands.Cog):
         embed : discord.Embed, optional
             embed object to give a personalization to the message.
 
-        Return:
+        Return
         -------
         None.
         """
@@ -273,13 +273,13 @@ class Message(commands.Cog):
         Get the title of the draw where is being invoked under through the embed
         object stored in self.__draws.
 
-        Paraeters:
+        Paraeters
         ----------
         ctx : discord.ext.commands.Context
             Represent the context (information) where the command is being invoked 
             under.
 
-        Return:
+        Return
         -------
         str
             containing the title.
@@ -293,13 +293,13 @@ class Message(commands.Cog):
         Get the embed object used where is being invoked under through the embed 
         object stored in self.__draws.
 
-        Paraeters:
+        Paraeters
         ----------
         ctx : discord.ext.commands.Context
             Represent the context (information) where the command is being invoked 
             under.
         
-        Return:
+        Return
         -------
         discord.Embed
             embed object used by the draw.
@@ -313,13 +313,13 @@ class Message(commands.Cog):
         Get the embed object used where is being invoked under through the embed 
         object stored in self.__draws.
 
-        Paraeters:
+        Paraeters
         ----------
         ctx : discord.ext.commands.Context
             Represent the context (information) where the command is being invoked 
             under.
         
-        Return:
+        Return
         -------
         int
             with the id of the draw message.
@@ -355,7 +355,7 @@ class Message(commands.Cog):
         Set a new field/s using the differents functions of discord.Embed with the 
         different configuration that could be given to each function.
 
-        Parameters:
+        Parameters
         -----------
         embed : discord.Embed
             The embed object where it will added new fields.
@@ -368,12 +368,12 @@ class Message(commands.Cog):
             Indicate if the new text of add_field should go in the same line (default
             if False).
 
-        Raises:
+        Raises
         -------
         ValueError
             If the embed doesn't exist. 
 
-        Return:
+        Return
         -------
         None.
         """

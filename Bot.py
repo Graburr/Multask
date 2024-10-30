@@ -100,7 +100,7 @@ class Bot():
         async def on_ready() -> None:
             """Execute this function automatically when bot is set up.
             
-            This create a node of a public server of Lavalink to reproduce songs
+            This create a node to a public server of Lavalink to reproduce songs
 
             Returns
             -------
