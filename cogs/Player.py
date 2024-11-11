@@ -57,6 +57,8 @@ class Player(commands.Cog):
         self.songs : list[wavelink.Playable] = []
         self.listening_music = False
         self.task : Optional[asyncio.Task] = None
+        self.shuffle : bool = False
+        self.voice_channel = None
 
 
     @staticmethod
@@ -105,10 +107,10 @@ class Player(commands.Cog):
         if not channel:
             raise ValueError("The user {ctx.author} isn't connected to any voice channel\n")
         
-        voice_channel = typing.cast(wavelink.Player, ctx.voice_client)
+        self.voice_channel = typing.cast(wavelink.Player, ctx.voice_client)
 
         if not ctx.bot.voice_clients:
-            voice_channel = await channel.connect(cls=wavelink.Player)
+            self.voice_channel = await channel.connect(cls=wavelink.Player)
 
         song = await wavelink.Playable.search(search)
 
@@ -129,16 +131,14 @@ class Player(commands.Cog):
         else:
             self.songs.append(song)
 
-        randomize = False
-
         if len(self.songs) > 1 and shuffle == "y":
-            randomize = True
+            self.shuffle = True
             
         if not self.listening_music:
             # Create the task to reproduce songs on the background
             self.listening_music = True
-            self.task = asyncio.create_task(self.__listening_music
-                                             (ctx, voice_channel, wavelink.Player, randomize))
+            self.task = asyncio.create_task(self.__listening_music(ctx))
+
 
     @commands.command()
     async def disconnect(self, ctx) -> None: 
@@ -160,17 +160,15 @@ class Player(commands.Cog):
             raise ValueError("The bot isn't connected to any channel\n")
         
         await vc.disconnect()
-        try:
-            await vc.cleanup()
-        except TypeError as te:
-            print(f"An error occured when cleaning up the voice data of bot: {te}\n")
+        vc.cleanup()
 
         self.listening_music = False
+        self.songs.clear()
         self.task.cancel()
 
 
-    async def __listening_music(self, ctx, bot : discord.VoiceProtocol,  
-                                shuffle : bool) -> None:
+
+    async def __listening_music(self, ctx) -> None:
         """Execute all music that is on songs attribute.
 
         Execute all music one by one or randomly until songs get empty. When it send a
@@ -195,13 +193,12 @@ class Player(commands.Cog):
         try:
             while self.songs:
                 index_song = 0
-                if shuffle:
+                if self.shuffle:
                     index_song = random.randint(0, len(self.songs) - 1)
 
-                song = self.songs[index_song]
-                await self.__play_song(ctx, song=song, bot=bot)
+                song = self.songs.pop(index_song)
+                await self.__play_song(ctx, song)
 
-                self.songs.pop(index_song)
                 # suspend 5sec the coroutine to not overload the processor" 
                 await asyncio.sleep(song.length / 1000) 
 
@@ -209,8 +206,7 @@ class Player(commands.Cog):
             print(f"Bot was disconnected: {e}")
 
 
-    async def __play_song(self, ctx, *, song : wavelink.Playable, bot : 
-                          discord.VoiceProtocol) -> None:
+    async def __play_song(self, ctx, *, song : wavelink.Playable) -> None:
         """Reproduce song specificed by parameter throught the bot. 
 
         Parameters
@@ -228,6 +224,6 @@ class Player(commands.Cog):
         -------
         None.
         """
-        await bot.play(song)
+        await self.voice_channel.play(song)
         await ctx.send(f"Playing {song.title}")
         

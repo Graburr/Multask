@@ -7,12 +7,12 @@ class MyView(discord.ui.View):
     In this case it put 2 reactions with thumbs up and thumbs down. Each of these reaction,
     has a different functionality.
 
-    Atributes:
+    Atributes
     ----------
     channel : discord.Message.channel
         The channel where the message (that has the view) was invoked.
 
-    Methods:
+    Methods
     --------
     async def first_button_callback(self, interaction: discord.Interaction,
                                      button: discord.ui.Button) -> None:
@@ -33,11 +33,11 @@ class MyView(discord.ui.View):
         """Delete the message which is associated with the 👍 in the specific channel
         provided by the attribute.
 
-        Return:
+        Returns
         -------
         None.
 
-        Notes:
+        Notes
         ------
         The parameters must be passed because the discord api provided that values
         when the view is pressed. Since I don't use it, I won't comment the purpose of
@@ -54,17 +54,17 @@ class MyView(discord.ui.View):
         """Send a message when the 👎 button is pressed in the same channel where the view
         was invoked.
 
-        Parameters:
+        Parameters
         -----------
         interaction : discord.Interaction
             This is used to send a message in the same channel where the interaction with
             the 👎 happend.
 
-        Return:
+        Returns
         -------
         None.
 
-        Notes:
+        Notes
         ------
         For more info about the functionality of interaction and button parameters see:
         https://discordpy.readthedocs.io/en/latest/interactions/api.html
