@@ -24,12 +24,25 @@ class Player(commands.Cog):
     songs : list[wavelink.Playable]
         List used to store all the songs that is going to be reproduced.
 
+    voice_channel : discord.context.voice_client
+        Refeer to the bot that is connected to the voice channel to reprodue media
+        through it.
+
+    task : Optional[asyncio.Task]
+        Hold the object task that will be created to cancelled it when bot is disconnected.
+
+    bot_inactivity : Optional[asyncio.Task]
+        Hold the object task that will disconnect the bot due to inactivity.
+    
+    message_def_embed : Optional[discord.Message]
+        Get the message where it's going to be updating the embed of the song being reproduced.
+
     listening_music : bool
         Used to know if bot is reproducing music and avoid to create multiple tasks
         due to that.
 
-    task : Optional[asyncio.Task]
-        Hold the object task that will be created to cancelled it when bot is disconnected.
+    shuffle : bool
+        Indicate if choose randomly each song or choose following default order.
 
 
     Methods
@@ -43,13 +56,17 @@ class Player(commands.Cog):
     disconnect(self, ctx) -> None
         Disconnect the bot of the channel where is connected.
 
-    __listening_music(self, ctx, channel : discord.VoiceProtocol, 
-                      shuffle : bool) -> None:
+    async def next_song(self, ctx) -> None
+        Skip to the next song.
+
+    __listening_music(self, ctx) -> None:
         Reproduce all the music that is stored in attribute songs.
 
-    __play_song(self, ctx, *, song : wavelink.Playable,  channel : 
-                          discord.VoiceProtocol) -> None:
+    __play_song(self, ctx, *, song : wavelink.Playable) -> None:
         Play the song given by parameter.
+
+     __disconect_inactivity(self, ctx, minutes : int = 1) -> None:
+        Disconnect bot after certain time of inactivity.
     """
     def __init__(self, bot : commands.Bot) -> None:
         """Constructor of the media player"""
@@ -59,11 +76,10 @@ class Player(commands.Cog):
         self.voice_channel = None
         self.task : Optional[asyncio.Task] = None
         self.bot_inactivity : Optional[asyncio.Task] = None
+        self.message_def_embed : Optional[discord.Message] = None 
         
         self.listening_music = False
         self.shuffle = False
-        self.first_music_reproducing = False
-
 
 
     @staticmethod
@@ -169,13 +185,25 @@ class Player(commands.Cog):
 
         self.listening_music = False
         self.songs.clear()
-        self.task.cancel()
+        self.message_def_embed = None
+        self.task.cancel(msg="Disconnecting bot")
 
 
     @commands.command()
-    async def next_song(self, ctx) -> None:  
+    async def next_song(self, ctx) -> None: 
+        """Reproduce next song.
+
+        Paramteres
+        ----------
+        ctx : discord.ext.Commands
+            Context of the message that invoke this command.
+
+        Returns
+        -------
+        None
+        """ 
         if (self.songs):               
-            self.task.cancel()   
+            self.task.cancel(msg="Skipping song")   
             self.task = asyncio.create_task(self.__listening_music(ctx))
         else:
             await ctx.send("You can't skip song, there isn't more songs to reproduce")
@@ -191,12 +219,6 @@ class Player(commands.Cog):
         ----------
         ctx : discord.ext.Commands
             Context of the message that invoke this command.
-
-        bot : discord.VoiceProtocol
-            Bot with the voice protocol that enable him to reproduce song on it.
-
-        shuffle : bool
-            Randomize the order which song are going to be reproduced. By default None.
 
         Returns
         -------
@@ -217,7 +239,7 @@ class Player(commands.Cog):
                 # that is reproducing the actual song
                 await asyncio.sleep(song.length / 1000) 
 
-            # Start the counter to disconnect the bot when there isn't more songs
+            # Start again the counter to disconnect the bot when there isn't more songs
             self.bot_inactivity = asyncio.create_task(self.__disconect_inactivity(ctx))
         except asyncio.CancelledError:
             pass
@@ -234,19 +256,18 @@ class Player(commands.Cog):
         song : wavelink.Playable
             Song to reproduce.
 
-        bot : discord.VoiceProtocol
-            Bot where reproduce the song.
-
         Returns
         -------
-        None.
+        None
         """
-        if self.first_music_reproducing:
-            await ctx.channel.last_message.delete()
+        # Edit over the same message that has embed of the song, the currently song being
+        # reproduced
+        if self.message_def_embed:  
+            await self.message_def_embed.edit(content=song.uri)
+        else: # If no previous message exists, send that message
+            self.message_def_embed = await ctx.send(song.uri)
 
         await self.voice_channel.play(song)
-        await ctx.send(song.uri)
-        self.first_music_reproducing = True
         
 
     async def __disconect_inactivity(self, ctx, minutes : int = 1) -> None:
