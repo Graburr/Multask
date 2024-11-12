@@ -55,10 +55,15 @@ class Player(commands.Cog):
         """Constructor of the media player"""
         self.bot = bot
         self.songs : list[wavelink.Playable] = []
-        self.listening_music = False
-        self.task : Optional[asyncio.Task] = None
-        self.shuffle : bool = False
+
         self.voice_channel = None
+        self.task : Optional[asyncio.Task] = None
+        self.bot_inactivity : Optional[asyncio.Task] = None
+        
+        self.listening_music = False
+        self.shuffle = False
+        self.first_music_reproducing = False
+
 
 
     @staticmethod
@@ -107,10 +112,10 @@ class Player(commands.Cog):
         if not channel:
             raise ValueError("The user {ctx.author} isn't connected to any voice channel\n")
         
-        self.voice_channel = typing.cast(wavelink.Player, ctx.voice_client)
-
         if not ctx.bot.voice_clients:
+            self.voice_channel = typing.cast(wavelink.Player, ctx.voice_client)
             self.voice_channel = await channel.connect(cls=wavelink.Player)
+            self.bot_inactivity = asyncio.create_task(self.__disconect_inactivity(ctx))
 
         song = await wavelink.Playable.search(search)
 
@@ -129,7 +134,7 @@ class Player(commands.Cog):
             if not temp_songs:
                 self.songs.extend(temp_songs)
         else:
-            self.songs.append(song)
+            self.songs.append(song[0])
 
         if len(self.songs) > 1 and shuffle == "y":
             self.shuffle = True
@@ -167,6 +172,13 @@ class Player(commands.Cog):
         self.task.cancel()
 
 
+    @commands.command()
+    async def next_song(self, ctx) -> None:  
+        if (self.songs):               
+            self.task.cancel()   
+            self.task = asyncio.create_task(self.__listening_music(ctx))
+        else:
+            await ctx.send("You can't skip song, there isn't more songs to reproduce")
 
     async def __listening_music(self, ctx) -> None:
         """Execute all music that is on songs attribute.
@@ -191,22 +203,27 @@ class Player(commands.Cog):
         None.
         """
         try:
+            self.bot_inactivity.cancel() # Cancel the countdown to disconnect the bot
+
             while self.songs:
                 index_song = 0
                 if self.shuffle:
                     index_song = random.randint(0, len(self.songs) - 1)
-
+                
                 song = self.songs.pop(index_song)
                 await self.__play_song(ctx, song)
 
-                # suspend 5sec the coroutine to not overload the processor" 
+                # suspend the coroutine to not overload the processor during the time
+                # that is reproducing the actual song
                 await asyncio.sleep(song.length / 1000) 
 
-        except asyncio.CancelledError as e:
-            print(f"Bot was disconnected: {e}")
+            # Start the counter to disconnect the bot when there isn't more songs
+            self.bot_inactivity = asyncio.create_task(self.__disconect_inactivity(ctx))
+        except asyncio.CancelledError:
+            pass
 
 
-    async def __play_song(self, ctx, *, song : wavelink.Playable) -> None:
+    async def __play_song(self, ctx, song : wavelink.Playable) -> None:
         """Reproduce song specificed by parameter throught the bot. 
 
         Parameters
@@ -224,6 +241,14 @@ class Player(commands.Cog):
         -------
         None.
         """
+        if self.first_music_reproducing:
+            await ctx.channel.last_message.delete()
+
         await self.voice_channel.play(song)
-        await ctx.send(f"Playing {song.title}")
+        await ctx.send(song.uri)
+        self.first_music_reproducing = True
         
+
+    async def __disconect_inactivity(self, ctx, minutes : int = 1) -> None:
+        await asyncio.sleep(minutes * 60)
+        await self.disconnect(ctx)  

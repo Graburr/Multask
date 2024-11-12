@@ -78,7 +78,6 @@ class Bot():
     def start_bot(self, TOKEN: str) -> None:
         self.bot.run(TOKEN)
 
-            
 
     def register_events(self) -> None:
         """Register error events after the bot was created.
