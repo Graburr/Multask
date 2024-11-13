@@ -1,6 +1,6 @@
 import discord
 
-from cogs.Player import Player
+from src.Player import Player
 
 
 class PlayerView(discord.ui.View):
@@ -25,7 +25,6 @@ class PlayerView(discord.ui.View):
         Disconnect the bot from voice channel.
     """
     def __init__(self, ctx, player : Player, timeout: float | None = 180):
-        # Set the max amount of time that the view is available
         super().__init__(timeout=timeout)
         self.__ctx = ctx
         self.__player = player

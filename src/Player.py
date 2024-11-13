@@ -91,7 +91,7 @@ class Player(commands.Cog):
         str
             Message with the purpose of class player
         """
-        return "!player is used to simulate a media player of multiplataform content\n"
+        return "$player is used to simulate an mp3 player\n"
 
 
     @commands.command()

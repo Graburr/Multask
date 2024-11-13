@@ -2,28 +2,27 @@ import discord
 from discord.ext import commands
 
 class MyView(discord.ui.View):
-    """This class it's used to create views (buttons in this case) when it's needed.
+    """This class it's used to create buttons when help commands it's invoked.
 
-    In this case it put 2 reactions with thumbs up and thumbs down. Each of these reaction,
-    has a different functionality.
+    In this case it use 2 buttons with 2 reactions one with thumbs up and another one with
+    thumbs down. Each of these buttons, has different functionality.
 
     Atributes
-    ----------
+    ---------
     channel : discord.Message.channel
         The channel where the message (that has the view) was invoked.
 
     Methods
-    --------
+    -------
     async def first_button_callback(self, interaction: discord.Interaction,
                                      button: discord.ui.Button) -> None:
-        Delete the message when the 👍 button is pressed.
+        Delete the help message when the 👍 button is pressed.
 
     second_button_callback(self, interaction: discord.Interaction, 
                                      button: discord.ui.Button) -> None:
         Send a message when the 👎 button is pressed.
     """
     def __init__(self, *, timeout: float | None = 180, channel: discord.Message.channel):
-        # Set the max amount of time that the view is available
         super().__init__(timeout=timeout)
         self.channel = channel
 

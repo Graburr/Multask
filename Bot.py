@@ -6,12 +6,10 @@ from dotenv import load_dotenv
 from discord.ext import commands
 import wavelink
 
-from cogs.Game import Game
-from cogs.Message import Message
-from cogs.Player import Player
-from cogs.Ppv import Ppv
-from MyView import MyView
-
+from src.Game import Game
+from src.Message import Message
+from src.Player import Player
+from views.MyView import MyView
 
 
 class Bot():
@@ -110,8 +108,8 @@ class Bot():
             # Public server
             nodes = [
                 wavelink.Node(
-                identifier="Node1", # This identifier must be unique for all the nodes you are going to use
-                uri="https://lavalinkv4-id.serenetia.com:443", # Protocol (http/s) is required, port must be 443 as it is the one lavalink uses
+                identifier="Node1",
+                uri="https://lavalinkv4-id.serenetia.com:443",
                 password="BatuManaBisa",
                 )       
             ]
@@ -140,6 +138,7 @@ class Bot():
             -------
             None
             """
+            # Create an embed to show the info of help command
             embed = discord.Embed(
                  title="Use of commands",
                  description="Show all types of commands that you have",
