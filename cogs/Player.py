@@ -123,7 +123,12 @@ class Player(commands.Cog):
         ValueError
             The user who invoke this command isnt connected to any voice channel.
         """
-        channel = ctx.author.voice.channel
+        try:
+            channel = ctx.author.voice.channel
+        except AttributeError:
+            await ctx.send(f"{ctx.author.name} you have to be connected to any voice " 
+                           "channel in order to use this command")
+            return
 
         if not channel:
             raise ValueError("The user {ctx.author} isn't connected to any voice channel\n")
@@ -260,12 +265,15 @@ class Player(commands.Cog):
         -------
         None
         """
+        from views.PlayerView import PlayerView # Deferred import, first time it will import
+                                                # the module, then it will make cache hints
+                                                
         # Edit over the same message that has embed of the song, the currently song being
         # reproduced
         if self.message_def_embed:  
             await self.message_def_embed.edit(content=song.uri)
-        else: # If no previous message exists, send that message
-            self.message_def_embed = await ctx.send(song.uri)
+        else: # If no previous message exists, create the message
+            self.message_def_embed = await ctx.send(song.uri, view=PlayerView(ctx, self, None))
 
         await self.voice_channel.play(song)
         

@@ -21,8 +21,8 @@ class Bot():
     manage all the functionality that is implemented in different classes. It also handles
     some errors that can occur and has a help command to show all the features that exists.
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
     icon : discord.File
         It has the default image of the icon that the bot will use
 
@@ -30,8 +30,8 @@ class Bot():
         Instance of the class that has the configuration to run the bot
     
         
-    Methods:
-    --------
+    Methods
+    -------
     run_bot(self) -> commands.Bot:
         Create the bot and initialize all the cogs of the differents object with different
         functionality
@@ -61,7 +61,7 @@ class Bot():
         Set up the bot with the intents that it has (all privileges). Then select the
         keyword to invoke the commands ($) and finally, add all the cogs of the bot.
 
-        Return:
+        Returns
         -------
         commands.Bot
             Instance of the class with the bot set up to use his functionality.
@@ -85,7 +85,7 @@ class Bot():
         The error events must be created inside this method because I couldn't use the
         decorator of the bot. Due to that, I had to encapsulate the method to manage errors.
 
-        Return:
+        Returns
         -------
         None.
         """    
@@ -136,7 +136,7 @@ class Bot():
             It show the functionality using the embed messages and algo calling each class
             method get_desc() with a brief description of it functionality.
 
-            Return:
+            Returns
             -------
             None
             """
