@@ -69,6 +69,7 @@ class Bot():
 
         asyncio.run(bot.add_cog(Message()))
         asyncio.run(bot.add_cog(Player(bot)))
+        asyncio.run(bot.add_cog(Game()))
 
         return bot
             
