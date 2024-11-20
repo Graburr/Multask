@@ -1,5 +1,6 @@
 import json
 import urllib3
+import os
 import discord
 from discord.ext import commands
 
@@ -15,7 +16,7 @@ class Game(commands.Cog):
         return ("""$game it's used to select a random champ and runes between all members
                 that are in the same voice channel playing League of Legend\n""")
     
-    def read_json(self) -> None:
+    def read_champions(self) -> None:
         http = urllib3.PoolManager(1)
         url = "https://ddragon.leagueoflegends.com/cdn/14.23.1/data/en_US/champion.json"
 

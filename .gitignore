@@ -5,3 +5,4 @@ logs/
 application.yml
 *.jar
 *.txt
+readJson.py
