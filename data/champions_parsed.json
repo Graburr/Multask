@@ -167,5 +167,6 @@
     "Ziggs": "images\\champion\\Ziggs.png",
     "Zilean": "images\\champion\\Zilean.png",
     "Zoe": "images\\champion\\Zoe.png",
-    "Zyra": "images\\champion\\Zyra.png"
+    "Zyra": "images\\champion\\Zyra.png",
+    "num_champs": 168
 }
