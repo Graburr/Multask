@@ -46,8 +46,8 @@ class Bot():
 
     def __init__(self):
         """Constructor to initialize the bot class"""
-        self.icon = discord.File(f"{os.path.dirname(__file__)}/images/icon_dc.png", 
-                                 filename="icon_dc.png")
+        self.icon = discord.File(os.path.join(os.path.dirname(__file__),"assets",
+                                "icon_dc.png"), filename="icon_dc.png")
         self.bot = self.run_bot()
         self.register_events()
         self.register_commands()
@@ -68,7 +68,7 @@ class Bot():
         bot = commands.Bot(command_prefix='$', intents=intents, help_command=None)
 
         asyncio.run(bot.add_cog(Message()))
-        asyncio.run(bot.add_cog(Player(bot)))
+        asyncio.run(bot.add_cog(Player()))
         asyncio.run(bot.add_cog(Game()))
 
         return bot
@@ -105,18 +105,22 @@ class Bot():
             None
             """
             await self.bot.wait_until_ready()
-            
-            # Public server
-            nodes = [
-                wavelink.Node(
-                identifier="Node1",
-                uri="https://lavalinkv4-id.serenetia.com:443",
-                password="BatuManaBisa",
-                )       
-            ]
 
-            await wavelink.Pool.connect(client=self.bot, nodes=nodes)
-            print("Conexion stablized")
+            urls = {"https://lava-all.ajieblogs.eu.org:443" : "https://dsc.gg/ajidevserver",
+                    "https://lava-v4.ajieblogs.eu.org:443" : "https://dsc.gg/ajidevserver",
+                    "https://lavalinkv3-id.serenetia.com:443" : "BatuManaBisa"}
+            
+            for uri, psswd in urls.items():
+                # Public server
+                node = wavelink.Node(uri=uri, password=psswd)
+                try:
+                    await asyncio.wait_for(wavelink.Pool.connect(client=self.bot, 
+                                            nodes=[node]), timeout=4.0)
+                    print("Conexion establish")
+                    break
+                except asyncio.TimeoutError:
+                    print(f"{uri} --> conexion wasn't able to be stablished.\n"
+                          "trying next option...")
     
 
     def register_commands(self) -> None:

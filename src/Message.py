@@ -72,7 +72,7 @@ class Message(commands.Cog):
 
     def __init__(self) -> None:
         self.reaction = "✅"
-        self.file = discord.File(f"{os.path.dirname(__file__)}/../images/icon_dc.png",
+        self.file = discord.File(os.path.join(os.getcwd(),"assets","icon_dc.png"), 
                                 filename="icon_dc.png")
         self.__draws = dict()
 

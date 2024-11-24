@@ -18,9 +18,6 @@ class Player(commands.Cog):
     
     Attributes
     ----------
-    bot : commands.Bot
-        The object that has been used to initialize the bot.
-
     songs : list[wavelink.Playable]
         List used to store all the songs that is going to be reproduced.
 
@@ -68,9 +65,8 @@ class Player(commands.Cog):
      __disconect_inactivity(self, ctx, minutes : int = 1) -> None:
         Disconnect bot after certain time of inactivity.
     """
-    def __init__(self, bot : commands.Bot) -> None:
+    def __init__(self) -> None:
         """Constructor of the media player"""
-        self.bot = bot
         self.songs : list[wavelink.Playable] = []
 
         self.voice_channel = None
