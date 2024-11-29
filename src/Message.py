@@ -332,7 +332,7 @@ class Message(commands.Cog):
                        inline: bool=False) -> discord.Embed:  
         """ Create an embed object using the class discord.Embed.
 
-        This method is used to avoid DRY. See the documentation of discord.Embed() at:
+        See the documentation of discord.Embed() at:
         https://discordpy.readthedocs.io/en/latest/api.html?highlight=embed#discord.Embed
         """    
         embed = discord.Embed(

@@ -7,7 +7,7 @@ from itertools import islice
 from riotwatcher import LolWatcher, ApiError
 from dotenv import load_dotenv
 
-# URL to json that contain champs https://ddragon.leagueoflegends.com/cdn/14.23.1/data/en_US/champion.json
+# Select differents colors for the embed in function of the runes used
 colors_runes = {
     "Domination" : (215,65,67),
     "Precision" : (206,174,123),
@@ -17,6 +17,27 @@ colors_runes = {
 }
 
 class Game(commands.Cog):
+    """Select a randomized champ, items, summoners and runes for the game League of Legends.
+
+    This read all the members that exists in a class, then for each player, select a random
+    champ, items, summoners and runes. The purpose it's just to have fun playing differents
+    compos as it's normal playing.
+
+    Attributes
+    ----------
+    data_assets : dict[str : list]
+        Have all the champions, items, runes, etc that exists in the game to select it
+        in a random way.
+
+    __TOKEN_RIOT : str
+        The token of the riot games API.
+
+    watcher : LolWatcher
+        Class that provide functions to make call to the riot API in a eassly way.
+
+    region : str
+        Region where to make the calls on the Riot Games API.
+    """
     def __init__(self):
         """Constructor to initialize the Game feature"""
         self.data_assets = self.__get_files(os.path.join(os.getcwd(), "assets"), ["champion"])
@@ -28,12 +49,33 @@ class Game(commands.Cog):
 
     @staticmethod
     def get_desc() -> str:
-        return ("""$game it's used to select a random champ and runes between all members
-                that are in the same voice channel playing League of Legend\n""")
+        """ Return a description of the use of this command.
+
+        Returns
+        -------
+        str
+            Message that will be given to the user.
+        """
+        return ("""$game it's used to select a random champ, runes, items, summoners, etc.
+                to each player that is in the same voice channel playing League of Legend\n""")
     
     @commands.command()
     async def randomize_champs(self, ctx) -> None:
-        """Return all members that are in the same channel who typed this functionality
+        """Generate all randomizations needed to each player on the same voice channel.
+
+        This first get all participants in a voice channel, then select in a random way
+        what each player shoud pick. Finally all this info is given to __embed_msg(), this 
+        function will create the embed that will be send to each user with the picks that
+        has to choose.
+
+        Parameters
+        ----------
+        ctx : discord.ext.Commands
+            Context of the message that invoke this command.
+
+        Returns
+        -------
+        None
         """
         
         participants = await self.__get_num_champs(ctx)
@@ -62,14 +104,19 @@ class Game(commands.Cog):
                     path = os.path.join(os.getcwd(), "assets", "game_images")
                     
                     if key == "1champion":
-                        champ_name, champ_image = random.choice(list(champs.items()))
-                        player_slection[champ_name] = champ_image
+                        _, champ_image = random.choice(list(champs.items()))
+                        player_slection[key] = champ_image
+                        limit = 1
+                        continue
+
                     elif key == "2summoner":
                         limit = 2
                         path = os.path.join(path, "2summoner")
+
                     elif key == "3item":
                         limit = 3
                         path = os.path.join(path, "3item")
+
                     else:
                         rune_selection = [rune for rune in self.data_assets 
                                           if rune not in ["3item", "2summoner"]]
@@ -81,21 +128,16 @@ class Game(commands.Cog):
                     key_values = []
 
                     while len(key_values) < limit:
-                        value = os.path.join(path, random.choice(
-                                            self.data_assets[key]))
+                        value = os.path.join(path, random.choice(self.data_assets[key]))
 
                         if value not in key_values:
                             key_values.append(value) 
                     #! CHECK THAT PLAYER_SELECTION HAVE ALL VALUES
                     player_slection[key] = key_values
-                
-                print(f"{player.name} has to choose the following:\n{player_slection}")
-                
 
-                # Add all of them to an embed message
+                # Create embed messages and send it throgh the same text channel where
+                # this command was invoked.
                 await self.__embed_msg(ctx, player.name, player_slection)
-
-        # send that embed through channel
 
 
     async def __embed_msg(self, ctx, user : str, player_selection : dict):
@@ -107,11 +149,9 @@ class Game(commands.Cog):
 
         for key, values in player_selection.items():
             embed = discord.Embed(
-                title=f"Selection for {user}",
+                title=f"{category[iteration]} {user}",
                 color=discord.Colour.from_rgb(*colors_runes[list(player_selection)[-1]])
-            )
-            embed.add_field(name=category[iteration], value="")
-            
+            )      
 
             try:
                 if not isinstance(values, list):
@@ -123,7 +163,6 @@ class Game(commands.Cog):
                     image_file = discord.File(path_image, filename=path_image.split("\\")[-1])
                     #! CHECK ALL IMAGES ARE INCLUDE IN THE ORDER NEEDED FOR THE FINAL LOOP
                     files_images.append(image_file)
-                    #embed.set_image(url=f"attachment://{image_file.filename}")
                     
                 pool_embeds.append(embed)
                 iteration += 1
