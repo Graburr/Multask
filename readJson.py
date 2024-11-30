@@ -1,37 +1,5 @@
 import json
-import urllib3
 import os
-
-def write_reduce_champs():
-    file_name = "data/champions_red.json"
-    champ = dict()
-    relative_path = os.path.relpath((os.path.join(os.path.dirname(__file__), "assets", 
-                                    "game_images", "champion")), "C:\\Users\\Dani\\Desktop\\Python Bot")
-    http = urllib3.PoolManager(1)
-    url = "https://ddragon.leagueoflegends.com/cdn/14.23.1/data/en_US/champion.json"
-
-    response = http.request("GET", url)
-
-    if response.status == 200:
-        data = json.loads(response.data.decode())
-        
-        
-        for values in data["data"].values():
-            # The name is the same as the image associated to this champ
-            champ_name = values["name"]
-
-            if champ_name:
-                champ_image = f"{champ_name.replace(' ', '')}.png" 
-                image_path = f"{relative_path}\\{champ_image}"
-            
-                champ[champ_name] = image_path
-
-    try: 
-        with open(file_name, "x", encoding="utf-8") as out_file:
-            json.dump(champ, out_file, indent=4)
-
-    except FileExistsError:
-        print(f"{file_name} alredy exists")
 
 
 def remove_runes_duplicated(parent : str, grand_parent : str, depth : int):
