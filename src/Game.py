@@ -80,14 +80,10 @@ class Game(commands.Cog):
         
         participants = await self.__get_num_champs(ctx)
         
-        
         # me = self.watcher.summoner.by_name(self.region, "Lauriita18")
-        
         # Get riot id of each one in the channel.
 
-
-
-        # select for each one randomly champ, runes and summoners
+        # Read the json with champs name and the path with the image of the champs
         with open(os.path.join(os.getcwd(), "data", "champions_red.json")) as f:
             champs = json.load(f)
 
@@ -96,11 +92,12 @@ class Game(commands.Cog):
                 
                 runes_selected = False
 
+                # Iterate over each random stuff to choose
                 for key in self.data_assets:
                     if runes_selected:
                         break
 
-                    limit = 4
+                    limit = 4 # number of random choice to do 
                     path = os.path.join(os.getcwd(), "assets", "game_images")
                     
                     if key == "1champion":
@@ -127,12 +124,13 @@ class Game(commands.Cog):
                     path = os.path.relpath(path, os.getcwd())
                     key_values = []
 
+                    # Store each random choice until reach the limits of stuff to store
                     while len(key_values) < limit:
                         value = os.path.join(path, random.choice(self.data_assets[key]))
 
                         if value not in key_values:
                             key_values.append(value) 
-                    #! CHECK THAT PLAYER_SELECTION HAVE ALL VALUES
+
                     player_slection[key] = key_values
 
                 # Create embed messages and send it throgh the same text channel where
