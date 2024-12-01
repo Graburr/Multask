@@ -27,15 +27,17 @@ def create_json_dirs(parent : str, depth : int) -> dict[str, str] | None:
             parent_child = os.path.join(parent, file.name)
             
             if file.is_dir():
-               dict_json[parent_child] = create_json_dirs(parent_child, depth + 1)
+                eliminate_path_parent = parent_child.split("\\")[-1]
+                dict_json[eliminate_path_parent] = create_json_dirs(parent_child, depth + 1)
+                
             else:
                 rel_path_values = os.path.relpath(os.path.join(parent_child, file),
                                                   os.getcwd()) 
-                rel_path_key = os.path.relpath(file, os.getcwd())
                 dict_json[file.name] = rel_path_values
 
         if depth == 1:
             try: 
+                eliminate_path_parent = parent.split("\\")[-1]
                 new_json_file = os.path.join(os.getcwd(), "data", parent.split("\\")[-1])
                                 
                 with open(new_json_file+".json", "w", encoding="utf-8") as out_file:

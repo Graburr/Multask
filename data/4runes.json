@@ -1,13 +1,15 @@
 {
-    "C:\\Users\\Dani\\Desktop\\Python Bot\\assets\\game_images\\4runes\\Domination": {
+    "Domination": {
         "CheapShot.png": "assets\\game_images\\4runes\\Domination\\CheapShot.png",
-        "DarkHarvest.png": "assets\\game_images\\4runes\\Domination\\DarkHarvest.png",
-        "Electrocute.png": "assets\\game_images\\4runes\\Domination\\Electrocute.png",
         "EyeballCollection.png": "assets\\game_images\\4runes\\Domination\\EyeballCollection.png",
         "GhostPoro.png": "assets\\game_images\\4runes\\Domination\\GhostPoro.png",
         "GreenTerror_TasteOfBlood.png": "assets\\game_images\\4runes\\Domination\\GreenTerror_TasteOfBlood.png",
-        "HailOfBlades.png": "assets\\game_images\\4runes\\Domination\\HailOfBlades.png",
         "IngeniousHunter.png": "assets\\game_images\\4runes\\Domination\\IngeniousHunter.png",
+        "mainRunes": {
+            "DarkHarvest.png": "assets\\game_images\\4runes\\Domination\\mainRunes\\DarkHarvest.png",
+            "Electrocute.png": "assets\\game_images\\4runes\\Domination\\mainRunes\\Electrocute.png",
+            "HailOfBlades.png": "assets\\game_images\\4runes\\Domination\\mainRunes\\HailOfBlades.png"
+        },
         "Predator.png": "assets\\game_images\\4runes\\Domination\\Predator.png",
         "RelentlessHunter.png": "assets\\game_images\\4runes\\Domination\\RelentlessHunter.png",
         "SuddenImpact.png": "assets\\game_images\\4runes\\Domination\\SuddenImpact.png",
@@ -15,70 +17,73 @@
         "UltimateHunter.png": "assets\\game_images\\4runes\\Domination\\UltimateHunter.png",
         "ZombieWard.png": "assets\\game_images\\4runes\\Domination\\ZombieWard.png"
     },
-    "Domination.png": "assets\\game_images\\4runes\\Domination.png",
-    "C:\\Users\\Dani\\Desktop\\Python Bot\\assets\\game_images\\4runes\\Inspiration": {
+    "Inspiration": {
         "AlchemistCabinet.png": "assets\\game_images\\4runes\\Inspiration\\AlchemistCabinet.png",
+        "ApproachVelocity.png": "assets\\game_images\\4runes\\Inspiration\\ApproachVelocity.png",
         "BiscuitDelivery.png": "assets\\game_images\\4runes\\Inspiration\\BiscuitDelivery.png",
         "CashBack2.png": "assets\\game_images\\4runes\\Inspiration\\CashBack2.png",
         "CelestialBody.png": "assets\\game_images\\4runes\\Inspiration\\CelestialBody.png",
         "CosmicInsight.png": "assets\\game_images\\4runes\\Inspiration\\CosmicInsight.png",
-        "FirstStrike.png": "assets\\game_images\\4runes\\Inspiration\\FirstStrike.png",
-        "GlacialAugment.png": "assets\\game_images\\4runes\\Inspiration\\GlacialAugment.png",
         "HextechFlashtraption.png": "assets\\game_images\\4runes\\Inspiration\\HextechFlashtraption.png",
         "JackofAllTrades2.png": "assets\\game_images\\4runes\\Inspiration\\JackofAllTrades2.png",
+        "mainRunes": {
+            "FirstStrike.png": "assets\\game_images\\4runes\\Inspiration\\mainRunes\\FirstStrike.png",
+            "GlacialAugment.png": "assets\\game_images\\4runes\\Inspiration\\mainRunes\\GlacialAugment.png",
+            "UnsealedSpellbook.png": "assets\\game_images\\4runes\\Inspiration\\mainRunes\\UnsealedSpellbook.png"
+        },
         "Kleptomancy.png": "assets\\game_images\\4runes\\Inspiration\\Kleptomancy.png",
         "MagicalFootwear.png": "assets\\game_images\\4runes\\Inspiration\\MagicalFootwear.png",
-        "TimeWarpTonic.png": "assets\\game_images\\4runes\\Inspiration\\TimeWarpTonic.png",
-        "UnsealedSpellbook.png": "assets\\game_images\\4runes\\Inspiration\\UnsealedSpellbook.png"
+        "TimeWarpTonic.png": "assets\\game_images\\4runes\\Inspiration\\TimeWarpTonic.png"
     },
-    "Inspiration.png": "assets\\game_images\\4runes\\Inspiration.png",
-    "C:\\Users\\Dani\\Desktop\\Python Bot\\assets\\game_images\\4runes\\Precision": {
+    "Precision": {
         "AbsorbLife.png": "assets\\game_images\\4runes\\Precision\\AbsorbLife.png",
-        "Conqueror.png": "assets\\game_images\\4runes\\Precision\\Conqueror.png",
         "CoupDeGrace.png": "assets\\game_images\\4runes\\Precision\\CoupDeGrace.png",
         "CutDown.png": "assets\\game_images\\4runes\\Precision\\CutDown.png",
-        "FleetFootwork.png": "assets\\game_images\\4runes\\Precision\\FleetFootwork.png",
+        "mainRunes": {
+            "Conqueror.png": "assets\\game_images\\4runes\\Precision\\mainRunes\\Conqueror.png",
+            "FleetFootwork.png": "assets\\game_images\\4runes\\Precision\\mainRunes\\FleetFootwork.png",
+            "LethalTempoTemp.png": "assets\\game_images\\4runes\\Precision\\mainRunes\\LethalTempoTemp.png",
+            "PressTheAttack.png": "assets\\game_images\\4runes\\Precision\\mainRunes\\PressTheAttack.png"
+        },
+        "LastStand.png": "assets\\game_images\\4runes\\Precision\\LastStand.png",
         "LegendAlacrity.png": "assets\\game_images\\4runes\\Precision\\LegendAlacrity.png",
         "LegendBloodline.png": "assets\\game_images\\4runes\\Precision\\LegendBloodline.png",
         "LegendHaste.png": "assets\\game_images\\4runes\\Precision\\LegendHaste.png",
-        "LethalTempoTemp.png": "assets\\game_images\\4runes\\Precision\\LethalTempoTemp.png",
         "PresenceOfMind.png": "assets\\game_images\\4runes\\Precision\\PresenceOfMind.png",
-        "PressTheAttack.png": "assets\\game_images\\4runes\\Precision\\PressTheAttack.png",
         "Triumph.png": "assets\\game_images\\4runes\\Precision\\Triumph.png"
     },
-    "Precision.png": "assets\\game_images\\4runes\\Precision.png",
-    "C:\\Users\\Dani\\Desktop\\Python Bot\\assets\\game_images\\4runes\\Resolve": {
-        "ApproachVelocity.png": "assets\\game_images\\4runes\\Resolve\\ApproachVelocity.png",
+    "Resolve": {
         "BonePlating.png": "assets\\game_images\\4runes\\Resolve\\BonePlating.png",
         "Chrysalis.png": "assets\\game_images\\4runes\\Resolve\\Chrysalis.png",
         "Conditioning.png": "assets\\game_images\\4runes\\Resolve\\Conditioning.png",
         "Demolish.png": "assets\\game_images\\4runes\\Resolve\\Demolish.png",
         "FontOfLife.png": "assets\\game_images\\4runes\\Resolve\\FontOfLife.png",
-        "GraspOfTheUndying.png": "assets\\game_images\\4runes\\Resolve\\GraspOfTheUndying.png",
-        "Guardian.png": "assets\\game_images\\4runes\\Resolve\\Guardian.png",
         "IronSkin.png": "assets\\game_images\\4runes\\Resolve\\IronSkin.png",
+        "mainRunes": {
+            "GraspOfTheUndying.png": "assets\\game_images\\4runes\\Resolve\\mainRunes\\GraspOfTheUndying.png",
+            "Guardian.png": "assets\\game_images\\4runes\\Resolve\\mainRunes\\Guardian.png",
+            "VeteranAftershock.png": "assets\\game_images\\4runes\\Resolve\\mainRunes\\VeteranAftershock.png"
+        },
         "MirrorShell.png": "assets\\game_images\\4runes\\Resolve\\MirrorShell.png",
         "Overgrowth.png": "assets\\game_images\\4runes\\Resolve\\Overgrowth.png",
         "Revitalize.png": "assets\\game_images\\4runes\\Resolve\\Revitalize.png",
-        "SecondWind.png": "assets\\game_images\\4runes\\Resolve\\SecondWind.png",
-        "VeteranAftershock.png": "assets\\game_images\\4runes\\Resolve\\VeteranAftershock.png"
+        "SecondWind.png": "assets\\game_images\\4runes\\Resolve\\SecondWind.png"
     },
-    "Resolve.png": "assets\\game_images\\4runes\\Resolve.png",
-    "C:\\Users\\Dani\\Desktop\\Python Bot\\assets\\game_images\\4runes\\Sorcery": {
+    "Sorcery": {
         "6361.png": "assets\\game_images\\4runes\\Sorcery\\6361.png",
         "AbsoluteFocus.png": "assets\\game_images\\4runes\\Sorcery\\AbsoluteFocus.png",
-        "ArcaneComet.png": "assets\\game_images\\4runes\\Sorcery\\ArcaneComet.png",
         "CelerityTemp.png": "assets\\game_images\\4runes\\Sorcery\\CelerityTemp.png",
         "GatheringStorm.png": "assets\\game_images\\4runes\\Sorcery\\GatheringStorm.png",
-        "LastStand.png": "assets\\game_images\\4runes\\Sorcery\\LastStand.png",
+        "mainRunes": {
+            "ArcaneComet.png": "assets\\game_images\\4runes\\Sorcery\\mainRunes\\ArcaneComet.png",
+            "PhaseRush.png": "assets\\game_images\\4runes\\Sorcery\\mainRunes\\PhaseRush.png",
+            "SummonAery.png": "assets\\game_images\\4runes\\Sorcery\\mainRunes\\SummonAery.png"
+        },
         "ManaflowBand.png": "assets\\game_images\\4runes\\Sorcery\\ManaflowBand.png",
-        "PhaseRush.png": "assets\\game_images\\4runes\\Sorcery\\PhaseRush.png",
         "Pokeshield.png": "assets\\game_images\\4runes\\Sorcery\\Pokeshield.png",
         "Scorch.png": "assets\\game_images\\4runes\\Sorcery\\Scorch.png",
-        "SummonAery.png": "assets\\game_images\\4runes\\Sorcery\\SummonAery.png",
         "Transcendence.png": "assets\\game_images\\4runes\\Sorcery\\Transcendence.png",
         "Unflinching.png": "assets\\game_images\\4runes\\Sorcery\\Unflinching.png",
         "Waterwalking.png": "assets\\game_images\\4runes\\Sorcery\\Waterwalking.png"
-    },
-    "Sorcery.png": "assets\\game_images\\4runes\\Sorcery.png"
+    }
 }

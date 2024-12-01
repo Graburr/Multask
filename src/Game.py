@@ -82,61 +82,152 @@ class Game(commands.Cog):
         
         # me = self.watcher.summoner.by_name(self.region, "Lauriita18")
         # Get riot id of each one in the channel.
+        champs_file = open(os.path.join(os.getcwd(), "data", "1champion.json"))
+        summoners_file = open(os.path.join(os.getcwd(), "data", "2summoner.json")) 
+        items_file = open(os.path.join(os.getcwd(), "data", "3item.json")) 
+        runes_file = open(os.path.join(os.getcwd(), "data", "4runes.json"))  
 
-        # Read the json with champs name and the path with the image of the champs
-        with open(os.path.join(os.getcwd(), "data", "champions_red.json")) as f:
-            champs = json.load(f)
+        selections = ["champs", "summoners", "items", "runes"]
+        for player in participants:
+            player_selection = self.__choose_random__items(selections)
+            await self.__embed_msg(ctx, player.name, player_selection)
 
-            for player in participants:
-                player_slection = dict()
+        champs_file.close()
+        summoners_file.close()
+        items_file.close()
+        runes_file.close()
+
+        # # Read the json with champs name and the path with the image of the champs
+        # with open(os.path.join(os.getcwd(), "data", "champions_red.json")) as f:
+        #     champs = json.load(f)
+
+        #     for player in participants:
+        #         player_slection = dict()
                 
-                runes_selected = False
+        #         runes_selected = False
 
-                # Iterate over each random stuff to choose
-                for key in self.data_assets:
-                    if runes_selected:
-                        break
+        #         # Iterate over each random stuff to choose
+        #         for key in self.data_assets:
+        #             if runes_selected:
+        #                 break
 
-                    limit = 4 # number of random choice to do 
-                    path = os.path.join(os.getcwd(), "assets", "game_images")
+                     
+        #             path = os.path.join(os.getcwd(), "assets", "game_images")
                     
-                    if key == "1champion":
-                        _, champ_image = random.choice(list(champs.items()))
-                        player_slection[key] = champ_image
-                        limit = 1
-                        continue
+        #             if key == "1champion":
+        #                 _, champ_image = random.choice(list(champs.items()))
+        #                 player_slection[key] = champ_image
+        #                 limit = 1
+        #                 continue
 
-                    elif key == "2summoner":
-                        limit = 2
-                        path = os.path.join(path, "2summoner")
+        #             elif key == "2summoner":
+        #                 limit = 2
+        #                 path = os.path.join(path, "2summoner")
 
-                    elif key == "3item":
-                        limit = 3
-                        path = os.path.join(path, "3item")
+        #             elif key == "3item":
+        #                 limit = 3
+        #                 path = os.path.join(path, "3item")
 
+        #             else:
+        #                 rune_selection = [rune for rune in self.data_assets 
+        #                                   if rune not in ["3item", "2summoner"]]
+        #                 key = random.choice(rune_selection)
+        #                 runes_selected = True
+        #                 path = path = os.path.join(path, "4runes", key)
+
+        #             path = os.path.relpath(path, os.getcwd())
+        #             key_values = []
+
+        #             # Store each random choice until reach the limits of stuff to store
+        #             while len(key_values) < limit:
+        #                 value = os.path.join(path, random.choice(self.data_assets[key]))
+
+        #                 if value not in key_values:
+        #                     key_values.append(value) 
+
+        #             player_slection[key] = key_values
+
+        #         # Create embed messages and send it throgh the same text channel where
+        #         # this command was invoked.
+
+    def __choose_random__items(self, selections : list) -> dict:
+        player_slection = dict()
+        limit = 1 # number of random choice to do
+        
+        for _ in range (limit):
+            list_values = []
+            file_dumped = json.load(selections[limit - 1]+"_file")
+            
+            j = limit
+            key_selected = random.choice(list(file_dumped.keys()))
+            main_rune_selected = False
+
+            while j > 0:
+                repeated_value = False
+
+                if limit == 4:
+                    rune_path = self.__select_runes(file_dumped, list_values, 
+                                                    key_selected, main_rune_selected)
+                    if rune_path is not None:
+                        list_values.append(rune_path)
                     else:
-                        rune_selection = [rune for rune in self.data_assets 
-                                          if rune not in ["3item", "2summoner"]]
-                        key = random.choice(rune_selection)
-                        runes_selected = True
-                        path = path = os.path.join(path, "4runes", key)
+                        repeated_value = True
+                else:
+                    item_choose = self.__select_item(file_dumped, list_values)
 
-                    path = os.path.relpath(path, os.getcwd())
-                    key_values = []
+                    if item_choose is not None:
+                        list_values.append(item_choose)
+                    else:
+                        repeated_value = True
 
-                    # Store each random choice until reach the limits of stuff to store
-                    while len(key_values) < limit:
-                        value = os.path.join(path, random.choice(self.data_assets[key]))
+                if not repeated_value:
+                    j -= 1
 
-                        if value not in key_values:
-                            key_values.append(value) 
+            player_slection[selections[limit - 1]] = list_values
+            limit += 1   
 
-                    player_slection[key] = key_values
+        return player_slection    
 
-                # Create embed messages and send it throgh the same text channel where
-                # this command was invoked.
-                await self.__embed_msg(ctx, player.name, player_slection)
+                
+    def __select_runes(self, file_dumped : dict, list_values : list, 
+                       key_selected : str, main_rune_selected : bool) -> str | None:
+        # Select a random rune of an specific type of rune.
+        key_specific_rune = random.choice(list(file_dumped[key_selected].keys()))
+        rune_selected = file_dumped[key_selected][key_specific_rune]
+        
+        # Insert runes that are not the main runes
+        if (rune_selected not in list_values) and (not isinstance(rune_selected, dict)):
+            # If main rune wasn't choose and the 3 subrunes were choosen, 
+            # force to choose the main rune
+            if len(list_values) == 3 and not main_rune_selected:
+                return self.__choose_main_rune(file_dumped, key_selected)
+            else:
+                return rune_selected
+        # main rune was choosen by random and main rune wasn't added yet
+        elif isinstance(rune_selected, dict) and not main_rune_selected:
+            # here rune_selected is a list because it was accesed the values
+            # of the pair that holds the main runes
+            main_rune_selected = True
+            return self.__choose_main_rune(file_dumped, key_selected)
+            
+        return
+    
 
+    def __choose_main_rune(self, file_dumped : dict, type_rune : str):
+        key_main_rune = random.choice(list(file_dumped[type_rune]["mainRunes"]).keys())
+        value_main_rune = file_dumped[type_rune]["mainRunes"][key_main_rune]
+        return value_main_rune
+    
+
+    def __select_item(self, file_dumped : dict, list_values : list) -> str | None:
+        random_key = random.choice(list(file_dumped.keys()))
+        values_selected = file_dumped[random_key]
+
+        if values_selected not in list_values:
+            return values_selected
+        
+        return
+    
 
     async def __embed_msg(self, ctx, user : str, player_selection : dict):
         iteration = 0
